@@ -68,8 +68,7 @@ Limites constatées : sur file://, WebKit n'applique pas la CSP au réseau (docu
 Playwright sous Windows, pas avec Safari. Le domaine garde les assets 4 h dans le cache du navigateur
 (`max-age=14400`) : un visiteur récent peut garder l'ancien `app.js` pendant ce délai.
 
-- [ ] À décider : le signalement privé GitHub est désactivé sur le dépôt. SECURITY.md propose en attendant un
-  ticket sans détail. Pour l'activer : Settings › Advanced Security › Private vulnerability reporting.
+- [x] Signalement privé des failles activé sur GitHub le 25 novembre ; SECURITY.md y renvoie.
 - [ ] Les empreintes ne sont pas signées indépendamment de GitHub.
 
 Cloudflare indique **Git Provider: No** : un push GitHub ne déclenche pas de déploiement automatique.

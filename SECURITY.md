@@ -52,7 +52,7 @@ The policy blocks scripts and connections to other domains. `'self'` still allow
 
 Please do not publish details of a vulnerability in a public issue.
 
-Open an [issue](https://github.com/LockingFR/lanterne/issues/new) titled "Security contact request", **without any technical detail**, to be given a private channel. If the repository's [Security tab](https://github.com/LockingFR/lanterne/security) shows a "Report a vulnerability" button, use that instead.
+Use GitHub's [private vulnerability report](https://github.com/LockingFR/lanterne/security/advisories/new) (a GitHub account is required). Only the maintainer can read it.
 
 Never send a real backup, recovery key, name or message. Use synthetic data such as that made by `tests/gen_backup.py`. Fixes go into the latest version only.
 
@@ -110,6 +110,6 @@ La politique bloque les scripts et les connexions vers d'autres domaines. `'self
 
 Ne publiez pas les détails d'une faille dans un ticket public.
 
-Ouvrez un [ticket](https://github.com/LockingFR/lanterne/issues/new) intitulé « Demande de contact sécurité », **sans aucun détail technique**, pour obtenir un canal privé. Si l'[onglet Security](https://github.com/LockingFR/lanterne/security) du dépôt affiche un bouton « Report a vulnerability », préférez-le.
+Utilisez le [signalement privé de GitHub](https://github.com/LockingFR/lanterne/security/advisories/new) (un compte GitHub est nécessaire). Seul le mainteneur peut le lire.
 
 N'envoyez jamais de vraie sauvegarde, de clé de récupération, de nom ni de message. Utilisez des données fictives comme celles de `tests/gen_backup.py`. Les corrections ne concernent que la dernière version.
