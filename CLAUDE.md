@@ -1,5 +1,7 @@
 # Lanterne : consignes pour Claude Code
 
+Lire PROGRESS.md en premier
+
 ## Le projet
 Site statique (aucun serveur) qui déchiffre et affiche les **sauvegardes locales Signal au format v2**
 (Signal 8.30+, Android, iOS, Desktop) entièrement dans le navigateur, avec la clé de récupération (AEP).
