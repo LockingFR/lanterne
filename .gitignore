@@ -1,0 +1,10 @@
+# Ne JAMAIS versionner de vraie sauvegarde Signal ni de clé
+SignalBackups/
+*.backup
+main
+metadata
+main.jsonl
+aep.txt
+tests/out/
+__pycache__/
+.DS_Store

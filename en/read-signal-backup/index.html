@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" data-l="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>How to read a Signal backup on a computer (recovery key)</title>
+<meta name="description" content="Open your Signal local backup folder (main, metadata, files) on PC or Mac with your recovery key, without a phone. Step-by-step guide and free tool.">
+<link rel="canonical" href="https://DOMAINE/en/read-signal-backup/">
+<link rel="alternate" hreflang="fr" href="https://DOMAINE/lire-sauvegarde-signal/">
+<link rel="alternate" hreflang="en" href="https://DOMAINE/en/read-signal-backup/">
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css">
+<meta name="theme-color" content="#0d6b5c">
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="brand"><a href="/"><img src="/assets/icon.svg" alt="" width="26" height="26">Lanterne</a></div></header>
+<main class="article">
+<h1>How to read a Signal backup on a computer</h1>
+<p class="lead">Since Signal 8.30, the on-device backup is no longer a single file: it's an encrypted folder shared by Android, iPhone and Signal Desktop. Here's how to open it and read your messages without a phone, using your recovery key.</p>
+<a class="cta" href="/?lang=en">Open my backup with Lanterne</a>
+
+<h2>What a Signal local backup contains</h2>
+<p>The backup folder (often named <code>SignalBackups</code>) holds:</p>
+<ul>
+<li>one dated subfolder per backup, with two files: <code>main</code> (every message, compressed then encrypted) and <code>metadata</code> (the backup's encrypted ID);</li>
+<li>a shared <code>files</code> folder, split into two-character subfolders, holding photos, videos, voice notes and documents, each encrypted with its own key.</li>
+</ul>
+<p>Everything is protected by your 64-character <strong>recovery key</strong>. Without it nobody can read the backup, not even Signal.</p>
+
+<h2>Read the backup in 4 steps</h2>
+<ol>
+<li><strong>Find your recovery key.</strong> Signal shows it under Settings, Backups if your phone still works; otherwise check the password manager where you saved it.</li>
+<li><strong>Copy the whole folder to your computer</strong> (USB cable, SD card, or the folder you picked in Signal Desktop). Keep the <code>files</code> folder to get your media back.</li>
+<li><strong>Open <a href="/?lang=en">Lanterne</a></strong>, click "Choose folder" and select the parent folder (the one containing <code>files</code>).</li>
+<li><strong>Paste the key</strong> and click "Decrypt and view". Your chats appear, with search and text export.</li>
+</ol>
+<p class="callout">Lanterne decrypts everything inside your browser. To check, turn off your internet connection after opening the page: the tool keeps working.</p>
+
+<h2>Common problems</h2>
+<p><strong>"Wrong key".</strong> The key doesn't match this backup. Check all 64 characters: <code>#</code> and <code>=</code> are part of it. If you generated a new key, only backups made afterwards open with it.</p>
+<p><strong>Photos don't show.</strong> You selected the dated subfolder instead of the parent folder. The <code>files</code> folder must be part of the selection.</p>
+<p><strong>I have a <code>signal-2025-….backup</code> file.</strong> That's the old Android format, protected by a 30-digit passphrase. Lanterne doesn't read it; the free tool <a href="https://github.com/bepaald/signalbackup-tools">signalbackup-tools</a> does.</p>
+<p><strong>I only have a cloud backup (Secure Backups).</strong> It can only be restored inside the Signal app, during setup.</p>
+
+<h2>What about privacy?</h2>
+<p>Your recovery key is the master key to your backups. Never type it on a site someone sent you in a message. Lanterne is open source, has no account and no ads on the tool page, and a strict security policy stops the page from sending anything.</p>
+<a class="cta" href="/?lang=en">Open my backup</a>
+<p><small>Lanterne is not affiliated with Signal Technology Foundation. <a href="/lire-sauvegarde-signal/">Version française</a></small></p>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr" data-l="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Lire une sauvegarde Signal sur ordinateur (clé de récupération)</title>
+<meta name="description" content="Comment ouvrir le dossier de sauvegarde locale Signal (main, metadata, files) sur PC ou Mac avec la clé de récupération, sans téléphone. Guide pas à pas et outil gratuit.">
+<link rel="canonical" href="https://DOMAINE/lire-sauvegarde-signal/">
+<link rel="alternate" hreflang="fr" href="https://DOMAINE/lire-sauvegarde-signal/">
+<link rel="alternate" hreflang="en" href="https://DOMAINE/en/read-signal-backup/">
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css">
+<meta name="theme-color" content="#0d6b5c">
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="brand"><a href="/"><img src="/assets/icon.svg" alt="" width="26" height="26">Lanterne</a></div></header>
+<main class="article">
+<h1>Lire une sauvegarde Signal sur ordinateur</h1>
+<p class="lead">Depuis Signal 8.30, la sauvegarde sur l'appareil n'est plus un simple fichier : c'est un dossier chiffré, commun à Android, iPhone et Signal Desktop. Voici comment l'ouvrir et relire vos messages sans téléphone, avec votre clé de récupération.</p>
+<a class="cta" href="/">Ouvrir ma sauvegarde avec Lanterne</a>
+
+<h2>Ce que contient une sauvegarde locale Signal</h2>
+<p>Le dossier de sauvegarde (souvent nommé <code>SignalBackups</code>) contient :</p>
+<ul>
+<li>un sous-dossier par sauvegarde, daté, avec deux fichiers : <code>main</code> (tous les messages, compressés puis chiffrés) et <code>metadata</code> (l'identifiant chiffré de la sauvegarde) ;</li>
+<li>un dossier <code>files</code> partagé, rangé en sous-dossiers de deux caractères, qui contient les photos, vidéos, vocaux et documents, chacun chiffré avec sa propre clé.</li>
+</ul>
+<p>Tout est protégé par votre <strong>clé de récupération</strong> de 64 caractères. Sans elle, personne ne peut lire la sauvegarde, pas même Signal.</p>
+
+<h2>Lire la sauvegarde en 4 étapes</h2>
+<ol>
+<li><strong>Retrouvez la clé de récupération.</strong> Elle s'affiche dans Signal (Réglages, Sauvegardes) si votre téléphone fonctionne encore, sinon dans le gestionnaire de mots de passe où vous l'avez enregistrée.</li>
+<li><strong>Copiez le dossier complet sur votre ordinateur</strong> (câble USB, carte SD, ou le dossier choisi dans Signal Desktop). Gardez le dossier <code>files</code> pour retrouver les médias.</li>
+<li><strong>Ouvrez <a href="/">Lanterne</a></strong>, cliquez sur « Choisir le dossier » et sélectionnez le dossier parent (celui qui contient <code>files</code>).</li>
+<li><strong>Collez la clé</strong> et cliquez sur « Déchiffrer et afficher ». Vos conversations s'affichent, avec recherche et export en texte.</li>
+</ol>
+<p class="callout">Lanterne déchiffre tout dans votre navigateur. Pour le vérifier, coupez votre connexion Internet après avoir ouvert la page : l'outil fonctionne pareil.</p>
+
+<h2>Problèmes fréquents</h2>
+<p><strong>« Clé incorrecte ».</strong> La clé ne correspond pas à cette sauvegarde. Vérifiez les 64 caractères : les symboles <code>#</code> et <code>=</code> en font partie. Si vous avez généré une nouvelle clé, seules les sauvegardes créées ensuite s'ouvrent avec elle.</p>
+<p><strong>Les photos ne s'affichent pas.</strong> Vous avez sélectionné le sous-dossier daté au lieu du dossier parent. Le dossier <code>files</code> doit faire partie de la sélection.</p>
+<p><strong>J'ai un fichier <code>signal-2025-….backup</code>.</strong> C'est l'ancien format Android, protégé par un code de 30 chiffres. Lanterne ne le lit pas ; l'outil libre <a href="https://github.com/bepaald/signalbackup-tools">signalbackup-tools</a> le fait.</p>
+<p><strong>Je n'ai que la sauvegarde dans le cloud (Secure Backups).</strong> Elle se restaure uniquement dans l'application Signal, à l'installation.</p>
+
+<h2>Et la confidentialité ?</h2>
+<p>Votre clé de récupération est la clé maîtresse de vos sauvegardes. Ne la saisissez jamais sur un site qu'on vous a envoyé par message. Lanterne est open source, n'utilise ni compte ni publicité sur la page de l'outil, et une politique de sécurité stricte empêche la page d'envoyer quoi que ce soit.</p>
+<a class="cta" href="/">Ouvrir ma sauvegarde</a>
+<p><small>Lanterne n'est pas affilié à Signal Technology Foundation. <a href="/en/read-signal-backup/">English version</a></small></p>
+</main>
+</div>
+</body>
+</html>
