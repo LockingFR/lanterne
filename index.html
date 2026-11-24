@@ -25,11 +25,12 @@
 {"@type":"Question","name":"Lanterne est-il affilié à Signal ?","acceptedAnswer":{"@type":"Answer","text":"Non. Lanterne est un outil indépendant. Signal est une marque de Signal Technology Foundation."}}
 ]}]}
 </script>
+<link rel="preload" href="/assets/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/style.css">
 
 </head>
 <body>
-<div class="wrap">
+<div class="night"><div class="wrap">
   <header class="top">
     <div class="brand">
       <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3v3" stroke="var(--fg)" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M10 9h12l-1.5 4h-9z" fill="var(--fg)"/><rect x="10.5" y="13" width="11" height="12" rx="2" fill="var(--lamp-soft)" stroke="var(--fg)" stroke-width="1.8"/><circle cx="16" cy="19" r="2.6" fill="var(--lamp)"/><path d="M9 27h14" stroke="var(--fg)" stroke-width="2" stroke-linecap="round"/></svg>
@@ -41,18 +42,38 @@
     </div>
   </header>
 
-  <div class="hero">
+  <div class="hero"><div class="hero-txt">
     <h1 data-l="fr">Relisez votre sauvegarde Signal <em>sans téléphone</em>, dans votre navigateur.</h1>
     <h1 data-l="en">Read your Signal backup <em>without a phone</em>, right in your browser.</h1>
     <p data-l="fr">Choisissez le dossier de sauvegarde locale créé par Signal (Android, iPhone ou Desktop), entrez votre clé de récupération de 64 caractères : vos conversations, photos et vocaux s'affichent. Tout est déchiffré sur votre appareil, rien n'est envoyé.</p>
     <p data-l="en">Pick the local backup folder Signal created (Android, iPhone or Desktop), enter your 64-character recovery key, and your chats, photos and voice notes appear. Everything is decrypted on your device; nothing is uploaded.</p>
-    <div class="badges">
-      <span class="badge">AES-256 · HMAC-SHA256 · HKDF</span>
-      <span class="badge" data-l="fr">Aucun envoi de données</span><span class="badge" data-l="en">Nothing uploaded</span>
-      <span class="badge" data-l="fr">Format v2 (Signal 8.30+)</span><span class="badge" data-l="en">v2 format (Signal 8.30+)</span>
-      <span class="badge">main.jsonl</span>
+    <div class="actions">
+      <a class="cta" href="#outil"><span data-l="fr">Ouvrir ma sauvegarde</span><span data-l="en">Open my backup</span></a>
+      <a class="ghost" href="https://github.com/LockingFR/lanterne"><span data-l="fr">Voir le code source</span><span data-l="en">View the source code</span></a>
     </div>
+    </div>
+    <svg class="lantern" viewBox="0 0 420 400" aria-hidden="true">
+      <defs>
+        <radialGradient id="halo"><stop offset="0" stop-color="#ffd07a" stop-opacity=".55"/><stop offset=".4" stop-color="#f0b54a" stop-opacity=".18"/><stop offset="1" stop-color="#f0b54a" stop-opacity="0"/></radialGradient>
+        <linearGradient id="verre" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe9b8"/><stop offset="1" stop-color="#f0a93a"/></linearGradient>
+      </defs>
+      <circle class="halo" cx="210" cy="200" r="200" fill="url(#halo)"/>
+      <g fill="#12241f" stroke="#f0b54a" stroke-opacity=".4" stroke-width="1.5">
+        <rect x="6" y="112" width="122" height="54" rx="18"/><rect x="300" y="178" width="112" height="54" rx="18"/><rect x="16" y="252" width="100" height="48" rx="18"/>
+      </g>
+      <path d="M26 132h78M26 148h48M320 198h70M320 214h40M36 270h58M36 285h32" stroke="#f7dfae" stroke-width="6" stroke-linecap="round" opacity=".75"/>
+      <g fill="none" stroke="#dfe9e3" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M160 108C160 20 260 20 260 108"/>
+        <path d="M150 140l22-34h76l22 34z" fill="#1b332c"/>
+        <path d="M158 140h104l10 160H148z" fill="url(#verre)"/>
+        <path d="M138 300h144l8 26H130z" fill="#1b332c"/>
+      </g>
+      <path d="M210 190c26 32 30 50 22 66a25 25 0 0 1-44 0c-8-16-4-34 22-66z" fill="#fff6dd"/>
+      <path d="M210 226c12 16 13 24 9 31a11 11 0 0 1-18 0c-4-7-3-15 9-31z" fill="#e58d1c"/>
+    </svg>
   </div>
+</div></div>
+<div class="wrap">
 
   <main id="outil">
     <div class="tool">
@@ -111,7 +132,7 @@
     </div>
   </main>
 
-  <section class="band">
+  <section class="band trust">
     <div class="cols">
       <div><h3 data-l="fr">Rien ne sort de votre appareil</h3><h3 data-l="en">Nothing leaves your device</h3>
         <p data-l="fr">Le déchiffrement utilise WebCrypto, intégré à votre navigateur. Pas de serveur, pas de compte, pas de cookie de suivi sur cette page.</p>
@@ -144,22 +165,22 @@
   <section class="band" id="faq">
     <h2 class="sec-h">FAQ</h2>
     <div class="faq">
-      <details open><summary data-l="fr">Ma clé de récupération quitte-t-elle mon ordinateur ?</summary><summary data-l="en">Does my recovery key leave my computer?</summary>
+      <details open><summary><span data-l="fr">Ma clé de récupération quitte-t-elle mon ordinateur ?</span><span data-l="en">Does my recovery key leave my computer?</span></summary>
         <p data-l="fr">Non. Tout se passe dans l'onglet, avec l'API WebCrypto. La page ne fait aucune requête pendant l'analyse : vous pouvez couper le Wi-Fi pour le vérifier. Cette clé protège aussi vos sauvegardes Signal : ne la tapez jamais sur une page qui vous l'a demandée par message.</p>
         <p data-l="en">No. Everything happens inside the tab, with the WebCrypto API. The page makes no requests while it works: turn off Wi-Fi to check. This key also protects your Signal backups, so never type it on a page you were sent a message about.</p></details>
-      <details><summary data-l="fr">Quelles sauvegardes sont prises en charge ?</summary><summary data-l="en">Which backups are supported?</summary>
+      <details><summary><span data-l="fr">Quelles sauvegardes sont prises en charge ?</span><span data-l="en">Which backups are supported?</span></summary>
         <p data-l="fr">Les sauvegardes locales au nouveau format (dossier avec <code>main</code>, <code>metadata</code> et <code>files</code>) de Signal 8.30 et plus, sur Android, iPhone et Desktop, et l'export en clair <code>main.jsonl</code> (expérimental). Les sauvegardes dans le cloud (Secure Backups) et l'ancien fichier <code>.backup</code> d'Android à 30 chiffres ne sont pas pris en charge.</p>
         <p data-l="en">Local backups in the new format (folder with <code>main</code>, <code>metadata</code> and <code>files</code>) from Signal 8.30 and later, on Android, iPhone and Desktop, plus the plaintext <code>main.jsonl</code> export (experimental). Cloud Secure Backups and the old 30-digit Android <code>.backup</code> file are not supported.</p></details>
-      <details><summary data-l="fr">Pourquoi « clé incorrecte » ?</summary><summary data-l="en">Why "wrong key"?</summary>
+      <details><summary><span data-l="fr">Pourquoi « clé incorrecte » ?</span><span data-l="en">Why "wrong key"?</span></summary>
         <p data-l="fr">La signature HMAC du fichier <code>main</code> ne correspond pas à la clé saisie. Vérifiez les 64 caractères (les <code>#</code> et <code>=</code> font partie de la clé), ou ouvrez une sauvegarde plus récente si vous avez régénéré votre clé.</p>
         <p data-l="en">The <code>main</code> file's HMAC doesn't match the key you entered. Check all 64 characters (<code>#</code> and <code>=</code> are part of the key), or open a newer backup if you regenerated your key.</p></details>
-      <details><summary data-l="fr">Les photos ne s'affichent pas</summary><summary data-l="en">Photos don't show up</summary>
+      <details><summary><span data-l="fr">Les photos ne s'affichent pas</span><span data-l="en">Photos don't show up</span></summary>
         <p data-l="fr">Les médias sont dans le dossier <code>files</code> à côté des sauvegardes datées. Choisissez le dossier parent, pas seulement le sous-dossier daté. Les photos de profil ne sont pas incluses par Signal.</p>
         <p data-l="en">Media lives in the <code>files</code> folder next to the dated backups. Choose the parent folder, not just the dated subfolder. Signal doesn't include profile photos.</p></details>
-      <details><summary data-l="fr">Puis-je restaurer la sauvegarde dans Signal avec Lanterne ?</summary><summary data-l="en">Can Lanterne restore the backup into Signal?</summary>
+      <details><summary><span data-l="fr">Puis-je restaurer la sauvegarde dans Signal avec Lanterne ?</span><span data-l="en">Can Lanterne restore the backup into Signal?</span></summary>
         <p data-l="fr">Non, Lanterne lit et exporte. La restauration se fait dans l'application Signal, à l'installation.</p>
         <p data-l="en">No, Lanterne reads and exports. Restoring happens inside the Signal app, at setup.</p></details>
-      <details><summary data-l="fr">Lanterne est-il affilié à Signal ?</summary><summary data-l="en">Is Lanterne affiliated with Signal?</summary>
+      <details><summary><span data-l="fr">Lanterne est-il affilié à Signal ?</span><span data-l="en">Is Lanterne affiliated with Signal?</span></summary>
         <p data-l="fr">Non. Lanterne est un outil indépendant et open source. Signal est une marque de Signal Technology Foundation.</p>
         <p data-l="en">No. Lanterne is an independent, open-source tool. Signal is a trademark of Signal Technology Foundation.</p></details>
     </div>

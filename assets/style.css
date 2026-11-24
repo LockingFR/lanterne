@@ -1,13 +1,14 @@
+@font-face{font-family:"Bricolage";src:url("/assets/fonts/bricolage.woff2") format("woff2");font-weight:200 800;font-display:swap}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 body{margin:0}
 img{max-width:100%}
 [hidden]{display:none!important}
 /* Layout : en-tête court, l'outil en premier (panneau d'entrée + lecteur à deux colonnes), puis explications, FAQ et premium en colonne de lecture. */
 :root{
-  --bg:#eef0ec; --surface:#fbfcf9; --sunk:#e3e6e0; --fg:#18211d; --muted:#56615b; --line:#cfd5cc;
+  --night:#0c1a16; --bg:#f1f3ee; --surface:#ffffff; --sunk:#e6eae3; --fg:#18211d; --muted:#56615b; --line:#cfd5cc;
   --accent:#0d6b5c; --accent-fg:#ffffff; --lamp:#b9770e; --lamp-soft:#f6e9cf;
   --out:#0d6b5c; --out-fg:#f3fbf8; --in:#ffffff; --danger:#a3361f; --danger-bg:#f8e3dd; --ok:#1d7448; --ok-bg:#ddf1e4;
-  --display:"Avenir Next","Segoe UI Variable Display","Segoe UI",Ubuntu,system-ui,sans-serif;
+  --display:"Bricolage","Avenir Next","Segoe UI Variable Display","Segoe UI",Ubuntu,system-ui,sans-serif;
   --sans:system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif;
   --mono:ui-monospace,"Cascadia Mono","SF Mono",Menlo,Consolas,monospace;
 }
@@ -145,3 +146,77 @@ footer{padding-block:48px 40px;color:var(--muted);font-size:.85rem;border-top:1p
 .cta{display:inline-block;margin:10px 0 4px;background:var(--accent);color:var(--accent-fg);text-decoration:none;font-weight:700;padding:11px 18px;border-radius:6px}
 .callout{border-left:4px solid var(--lamp);background:var(--lamp-soft);padding:12px 16px;border-radius:0 6px 6px 0}
 .brand a{color:inherit;text-decoration:none;display:flex;align-items:center;gap:10px}
+
+/* ---------- habillage : la lanterne dans la nuit ---------- */
+html{scroll-behavior:smooth}
+.night{background:radial-gradient(760px 520px at 76% 52%,#2b3a24 0,transparent 70%),var(--night);color:#e9f0eb;padding-bottom:120px;overflow:hidden}
+.night{--fg:#f3f7f4;--lamp:#f0b54a;--lamp-soft:#f0b54a33}
+.night .brand,.wrap>.top .brand{color:#f3f7f4;font-size:1.35rem}
+.night .lang button{border-color:#ffffff33;color:#b9c8c0}
+.night .lang button[aria-pressed="true"]{background:#f0b54a;border-color:#f0b54a;color:#1d1503}
+.hero{max-width:none;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:center;gap:32px;padding-block:26px 34px}
+.hero-txt{display:grid;gap:20px}
+.hero h1{font-size:clamp(2.3rem,4.7vw,3.9rem);font-weight:700;letter-spacing:-.025em;line-height:1.04}
+.hero p{color:#b9c8c0;font-size:1.1rem;max-width:56ch}
+.actions{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center}
+.actions .cta{margin:0;background:#f0b54a;color:#1d1503}
+.ghost{color:#e9f0eb;font-weight:600;text-underline-offset:5px;text-decoration-color:#f0b54a}
+.cta{border-radius:10px;padding:13px 22px;transition:transform .15s,filter .15s}
+.cta:hover{transform:translateY(-2px);filter:brightness(1.07)}
+.lantern{width:100%;max-width:430px;justify-self:center}
+.halo{transform-origin:210px 200px;animation:lueur 5s ease-in-out infinite}
+@keyframes lueur{50%{opacity:.72;transform:scale(.95)}}
+#outil{margin-top:-104px;scroll-margin-top:20px}
+.tool{border-radius:18px;border-color:transparent;box-shadow:0 0 0 1px var(--line),0 30px 70px -30px #06120daa}
+.panel{padding:26px}.panel h2{font-size:1.35rem}
+.lbl,label[for="aep"]{font:700 .92rem var(--sans);text-transform:none;letter-spacing:0;color:var(--fg)}
+.drop{border-radius:12px;border-color:color-mix(in srgb,var(--accent) 45%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--surface))}
+.drop:hover{border-color:var(--accent)}
+.drop label[for="dirInput"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.btn{border-radius:9px;transition:border-color .15s,filter .15s}
+.btn.primary{padding:13px}.btn.primary:hover:enabled{filter:brightness(1.08)}
+textarea#aep,#q{border-radius:9px}
+.status:empty{display:none}
+.chatlist,.msgs{max-height:660px}
+.msgs{padding:20px;gap:8px}
+.chatlist{padding-block:6px}.av{width:38px;height:38px}
+.chatbtn{grid-template-columns:38px 1fr auto;border-bottom:0;border-radius:10px;margin:2px 8px;width:calc(100% - 16px);padding:10px}
+.chatbtn:hover{background:var(--bg)}
+.chatbtn[aria-current="true"]{background:color-mix(in srgb,var(--accent) 12%,var(--surface))}
+.m{border-radius:18px;border-color:transparent;box-shadow:0 1px 2px #0000001a;padding:9px 14px}
+.m.out{border-bottom-right-radius:5px}.m:not(.out){border-bottom-left-radius:5px}
+section.band{padding-block:88px 0}
+section.trust{padding-top:56px}
+.cols{gap:40px}.cols>div{border-top:3px solid var(--lamp);padding-top:16px}
+.cols h3{font-size:1.25rem}
+.sec-h{font-size:clamp(1.8rem,3.6vw,2.7rem);letter-spacing:-.02em;margin-bottom:30px}
+.steps{max-width:none;grid-template-columns:repeat(3,1fr);gap:40px}
+.steps li{grid-template-columns:1fr;gap:14px;align-content:start}
+.conv{background:var(--bg)}.conv-head{background:var(--surface)}
+.steps li::before{width:46px;height:46px;font-size:1.3rem;background:var(--lamp);color:var(--bg)}
+.steps strong{font:700 1.15rem var(--display)}
+#faq{display:grid;grid-template-columns:1fr 2fr;gap:40px}
+.faq{max-width:none}
+.faq details{padding:0}
+.faq summary{list-style:none;display:flex;justify-content:space-between;gap:16px;padding:18px 0;font-size:1.08rem}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font:400 1.6rem/1 var(--display);color:var(--lamp)}
+.faq details[open] summary::after{content:"\2013"}
+.faq summary:hover{color:var(--accent)}
+.faq p{margin:0 0 20px}
+.prem{max-width:none;gap:24px}
+.plan{border-radius:18px;padding:32px;gap:14px}.plan h3{font-size:1.4rem}.price{font-size:2.6rem;line-height:1}
+.plan.pro{background:#0c1a16;color:#e9f0eb;border-color:#2b3a24}
+.plan.pro ul,.plan.pro .note,.plan.pro small{color:#b9c8c0}.plan.pro .price{color:#f0b54a}
+.plan ul{gap:8px;font-size:1rem}
+footer{margin-top:96px}footer p{max-width:90ch}
+body>.wrap>.top{background:var(--night);box-shadow:0 0 0 100vmax var(--night);clip-path:inset(0 -100vmax)}
+.article{margin-inline:auto;padding-top:48px}.article h1{font-size:clamp(2.2rem,5vw,3.3rem);letter-spacing:-.025em}
+.article h2{font-size:1.6rem;margin-top:48px}.article p,.article li{line-height:1.7}
+.callout{border-radius:12px;border-left:0;padding:18px 22px}
+@media (max-width:760px){
+  .hero{grid-template-columns:1fr;padding-top:6px}.lantern{max-width:230px;grid-row:1}
+  .steps,#faq,.cols{grid-template-columns:1fr;gap:28px}#faq{gap:0}section.band{padding-top:64px}
+  .panel{padding:20px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}html{scroll-behavior:auto}}
