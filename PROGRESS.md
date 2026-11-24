@@ -1,6 +1,6 @@
 # Lanterne — état du projet
 
-Mis à jour le **24 novembre 2026**. Lire ce fichier avant `CLAUDE.md`, puis respecter toutes ses règles.
+Mis à jour le **25 novembre 2026**. Lire ce fichier avant `CLAUDE.md`, puis respecter toutes ses règles.
 
 Site : https://lanterne-backup.com · Code : https://github.com/LockingFR/lanterne · Licence MIT.
 Dossier de travail : `G:\Sites\lanterne`.
@@ -48,8 +48,32 @@ donc pas qu'il reste à créer. Un export HTML contient des données déchiffré
 - [x] Les 26 fichiers publics servis correspondent aux empreintes locales ; la CSP HTTP correspond
   à `_headers`. Ce dernier est un fichier de configuration Cloudflare et n'est pas servi comme ressource.
 
+### Retours utilisateur du 25 novembre (v1.0.0, commit `c835398`)
+
+- [x] Langue : `assets/lang.js` envoie un navigateur non francophone vers la page anglaise, guides compris,
+  sauf choix mémorisé (clic sur un sélecteur ou `?lang=`). Pas de redirection pour les robots ; hreflang
+  réciproques avec x-default. L'ancienne clé `lanterne-lang` était écrite à chaque visite sans choix : ignorée.
+- [x] Version hors ligne : chemins relatifs, pas de service worker sur file://, CSP aussi en balise meta.
+- [x] `tools/build_offline.py` : zip reproductible (même SHA-256 depuis un clone neuf), SHA256SUMS, `dist/site`.
+- [x] Release https://github.com/LockingFR/lanterne/releases/tag/v1.0.0 — zip SHA-256
+  `f9e497000f69025d684cf99329cf0f67b71f1caf9270d5bae6e4ebe7fb2344d2`.
+- [x] `tools/verify-deployment.py` : **27/27** fichiers et CSP identiques entre la production et la release.
+- [x] `SECURITY.md` (EN/FR) et section « Vérifier / Verify » sur l'accueil.
+- [x] `run_test.py` : 5 OK. `run_offline_test.py` : 50/50 (file:// dans Chromium, Firefox et WebKit ; langue ;
+  aucune requête pendant le déchiffrement). Les 21 contrôles de langue, réseau et service worker passent aussi
+  sur le domaine public.
+- Déploiement : https://5dfe597b.lanterne-backup.pages.dev (aperçu de contrôle laissé sur la branche Pages `verif`).
+
+Limites constatées : sur file://, WebKit n'applique pas la CSP au réseau (documenté) ; testé avec le WebKit de
+Playwright sous Windows, pas avec Safari. Le domaine garde les assets 4 h dans le cache du navigateur
+(`max-age=14400`) : un visiteur récent peut garder l'ancien `app.js` pendant ce délai.
+
+- [ ] À décider : le signalement privé GitHub est désactivé sur le dépôt. SECURITY.md propose en attendant un
+  ticket sans détail. Pour l'activer : Settings › Advanced Security › Private vulnerability reporting.
+- [ ] Les empreintes ne sont pas signées indépendamment de GitHub.
+
 Cloudflare indique **Git Provider: No** : un push GitHub ne déclenche pas de déploiement automatique.
-Déployer uniquement le dossier contenant les fichiers publics, jamais les données de test ou les caches.
+Déployer uniquement `dist/site` (construit par `tools/build_offline.py`), jamais les données de test ou les caches.
 Les rapports de copie et de déploiement restent dans `G:\Sites`, hors du dépôt. La vérification du
 déploiement associé au commit de documentation est consignée dans `verification-deploiement.json`.
 
