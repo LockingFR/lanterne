@@ -80,3 +80,8 @@ Personne dans l'équipe n'a de sauvegarde Signal. On valide donc contre les donn
 2. Export HTML autonome d'une conversation (Premium plus tard).
 3. Recherche globale plus rapide, pagination, rendu des styles de texte (gras, italique, spoiler).
 4. Pages de guide supplémentaires (Android, iPhone, Desktop, « échec de restauration »).
+
+## Pages générées
+`python tools/build_pages.py` régénère `en/index.html` (depuis `index.html`), les guides, les pages de confidentialité et
+`sitemap.xml`. À relancer après toute modification de `index.html`. Ne pas éditer ces fichiers à la main.
+Le bouton « Copier le diagnostic » ne doit contenir que des tailles, compteurs et étapes. La carte Premium est masquée.

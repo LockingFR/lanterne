@@ -220,3 +220,5 @@ body>.wrap>.top{background:var(--night);box-shadow:0 0 0 100vmax var(--night);cl
   .panel{padding:20px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important}html{scroll-behavior:auto}}
+.conv-head h3{min-width:0;overflow-wrap:anywhere}
+.related{border-top:1px solid var(--line);margin-top:48px;padding-top:20px}

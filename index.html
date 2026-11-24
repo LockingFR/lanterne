@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <link rel="canonical" href="https://lanterne-backup.com/">
 <link rel="alternate" hreflang="fr" href="https://lanterne-backup.com/">
-<link rel="alternate" hreflang="en" href="https://lanterne-backup.com/?lang=en">
+<link rel="alternate" hreflang="en" href="https://lanterne-backup.com/en/">
+<link rel="alternate" hreflang="x-default" href="https://lanterne-backup.com/en/">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#0d6b5c">
@@ -15,6 +16,11 @@
 <meta property="og:title" content="Lanterne : lire une sauvegarde Signal dans le navigateur">
 <meta property="og:description" content="Déchiffrez et parcourez vos sauvegardes locales Signal hors ligne, avec votre clé de récupération. Aucun envoi de données.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://lanterne-backup.com/">
+<meta property="og:image" content="https://lanterne-backup.com/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
 {"@type":"SoftwareApplication","name":"Lanterne","applicationCategory":"UtilitiesApplication","operatingSystem":"Web browser","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Lecteur de sauvegardes locales Signal (format v2) qui déchiffre tout dans le navigateur avec la clé de récupération.","inLanguage":["fr","en"]},
@@ -105,6 +111,7 @@
         <button class="btn primary" id="go" type="submit" disabled><span data-l="fr">Déchiffrer et afficher</span><span data-l="en">Decrypt and view</span></button>
         <div class="status" id="status" role="status" aria-live="polite"></div>
         <ul class="log" id="log"></ul>
+        <button type="button" class="btn small" id="diag" hidden><span data-l="fr">Copier le diagnostic (sans contenu)</span><span data-l="en">Copy diagnostic (no content)</span></button>
 
         <p class="lockline" data-l="fr">Signal ne vous demandera jamais cette clé. Lanterne non plus ne l'envoie nulle part : coupez votre connexion avant de déchiffrer, l'outil fonctionne pareil.</p>
         <p class="lockline" data-l="en">Signal will never ask for this key. Lanterne never sends it anywhere either: go offline before decrypting and the tool works the same.</p>
@@ -123,6 +130,7 @@
             <h3 id="convTitle">—</h3>
             <div class="row2">
               <button type="button" class="btn small" id="copyTxt"><span data-l="fr">Copier en texte</span><span data-l="en">Copy as text</span></button>
+              <button type="button" class="btn small" id="dlHtml"><span data-l="fr">Exporter .html</span><span data-l="en">Export .html</span></button>
               <button type="button" class="btn small" id="dlTxt"><span data-l="fr">Exporter .txt</span><span data-l="en">Export .txt</span></button>
             </div>
           </div>
@@ -186,25 +194,11 @@
     </div>
   </section>
 
-  <section class="band" id="premium">
-    <h2 class="sec-h" data-l="fr">Gratuit pour lire, Premium pour archiver</h2>
-    <h2 class="sec-h" data-l="en">Free to read, Premium to archive</h2>
-    <div class="prem">
-      <div class="plan"><h3 data-l="fr">Gratuit</h3><h3 data-l="en">Free</h3><div class="price">0 €</div>
-        <ul data-l="fr"><li>Déchiffrement et lecture de toutes les conversations</li><li>Photos, vidéos, vocaux, autocollants</li><li>Recherche, export texte par conversation</li></ul>
-        <ul data-l="en"><li>Decrypt and read every chat</li><li>Photos, videos, voice notes, stickers</li><li>Search, per-chat text export</li></ul></div>
-      <div class="plan pro"><h3>Premium</h3><div class="price">7 € <small data-l="fr">paiement unique</small><small data-l="en">one-time</small></div>
-        <ul data-l="fr"><li>Archive HTML autonome avec tous les médias</li><li>PDF par conversation, prêt à imprimer</li><li>Fusion de plusieurs sauvegardes et dédoublonnage</li><li>Application de bureau hors ligne</li></ul>
-        <ul data-l="en"><li>Self-contained HTML archive with all media</li><li>Per-chat PDF, print-ready</li><li>Merge several backups, remove duplicates</li><li>Offline desktop app</li></ul>
-        <p class="note" data-l="fr">Offre indicative, pas encore disponible.</p><p class="note" data-l="en">Indicative offer, not available yet.</p></div>
-    </div>
-  </section>
-
   <footer>
     <p data-l="fr">Lanterne est un outil indépendant, non affilié à Signal Technology Foundation. Le code de déchiffrement est une réimplémentation du format documenté par libsignal et par le projet open source signal-backup-decrypt. Vos fichiers et votre clé restent sur votre appareil.</p>
-    <p data-l="fr"><a href="/lire-sauvegarde-signal/">Guide : lire une sauvegarde Signal sur ordinateur</a> · <a href="https://github.com/LockingFR/lanterne">Code source</a></p>
+    <p data-l="fr"><a href="/lire-sauvegarde-signal/">Guide : lire une sauvegarde Signal sur ordinateur</a> · <a href="/sauvegarde-signal-android/">Android</a> · <a href="/sauvegarde-signal-iphone/">iPhone</a> · <a href="/sauvegarde-signal-desktop/">Desktop</a> · <a href="/restauration-signal-echouee/">Restauration échouée</a> · <a href="/confidentialite/">Confidentialité</a> · <a href="https://github.com/LockingFR/lanterne">Code source</a></p>
     <p data-l="en">Lanterne is an independent tool, not affiliated with Signal Technology Foundation. The decryption code reimplements the format documented by libsignal and the open-source signal-backup-decrypt project. Your files and key stay on your device.</p>
-    <p data-l="en"><a href="/en/read-signal-backup/">Guide: read a Signal backup on a computer</a> · <a href="https://github.com/LockingFR/lanterne">Source code</a></p>
+    <p data-l="en"><a href="/en/read-signal-backup/">Guide: read a Signal backup on a computer</a> · <a href="/en/signal-backup-android/">Android</a> · <a href="/en/signal-backup-iphone/">iPhone</a> · <a href="/en/signal-backup-desktop/">Desktop</a> · <a href="/en/signal-restore-failed/">Failed restore</a> · <a href="/en/privacy/">Privacy</a> · <a href="https://github.com/LockingFR/lanterne">Source code</a></p>
   </footer>
 </div>
 

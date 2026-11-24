@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://lanterne-backup.com/</loc></url>
+  <url><loc>https://lanterne-backup.com/en/</loc></url>
   <url><loc>https://lanterne-backup.com/lire-sauvegarde-signal/</loc></url>
   <url><loc>https://lanterne-backup.com/en/read-signal-backup/</loc></url>
+  <url><loc>https://lanterne-backup.com/sauvegarde-signal-android/</loc></url>
+  <url><loc>https://lanterne-backup.com/en/signal-backup-android/</loc></url>
+  <url><loc>https://lanterne-backup.com/sauvegarde-signal-iphone/</loc></url>
+  <url><loc>https://lanterne-backup.com/en/signal-backup-iphone/</loc></url>
+  <url><loc>https://lanterne-backup.com/sauvegarde-signal-desktop/</loc></url>
+  <url><loc>https://lanterne-backup.com/en/signal-backup-desktop/</loc></url>
+  <url><loc>https://lanterne-backup.com/restauration-signal-echouee/</loc></url>
+  <url><loc>https://lanterne-backup.com/en/signal-restore-failed/</loc></url>
+  <url><loc>https://lanterne-backup.com/confidentialite/</loc></url>
+  <url><loc>https://lanterne-backup.com/en/privacy/</loc></url>
 </urlset>

@@ -5,9 +5,9 @@ const td = new TextDecoder();
 const enc = new TextEncoder();
 
 /* ---------- langue ---------- */
-let LANG = "fr";
+let LANG = /^\/en(\/|$)/.test(location.pathname) ? "en" : "fr";
 try { const qp = new URLSearchParams(location.search).get("lang"); if (qp === "en" || qp === "fr") localStorage.setItem("lanterne-lang", qp); } catch (e) {}
-try { const s = localStorage.getItem("lanterne-lang"); if (s) LANG = s; else if (!/^fr/i.test(navigator.language || "fr")) LANG = "en"; } catch (e) {}
+try { const s = localStorage.getItem("lanterne-lang"); if (s && location.pathname === "/") LANG = s; } catch (e) {}
 const TX = {
   fr: { you:"Vous", unknown:"Contact inconnu", group:"Groupe", notes:"Note à soi", search:"Rechercher…", msgs:"messages", chats:"conversations",
     sample:"Exemple", sampleSum:"Données d'exemple : ouvrez votre sauvegarde pour voir les vôtres.", backupOf:"Sauvegarde du", none:"Aucun message.",
@@ -20,7 +20,7 @@ const TX = {
     done:"Sauvegarde déchiffrée.", working:"Déchiffrement en cours…", found:"Sauvegarde trouvée :", media:"fichiers médias indexés", derive:"Clés dérivées (HKDF-SHA256)",
     bid:"Identifiant de sauvegarde déchiffré (AES-256-CTR)", mac:"Intégrité vérifiée (HMAC-SHA256)", gz:"Décompressé :", frames:"trames lues", jsonl:"Export en clair main.jsonl détecté (lecture expérimentale)",
     oldfmt:"Ce fichier .backup est l'ancien format Android (30 chiffres) : utilisez signalbackup-tools.", mediaMissing:"média absent du dossier files", mediaFail:"média illisible",
-    longtext:"(texte long dans un fichier joint)", emptyBackup:"Sauvegarde déchiffrée, mais elle ne contient aucun message.", noCrypto:"Votre navigateur ne prend pas en charge WebCrypto ou DecompressionStream. Utilisez une version récente de Chrome, Firefox, Edge ou Safari." },
+    longtext:"(texte long dans un fichier joint)", diagOk:"Diagnostic copié : aucune clé, aucun nom et aucun message dedans.", exporting:"Export en cours…", exportOk:"Conversation exportée. Ce fichier n'est pas chiffré : rangez-le en lieu sûr.", exportBig:"Cette conversation est volumineuse : l'export peut échouer si la mémoire manque.", exportFail:"L'export a échoué (mémoire insuffisante ?).", emptyBackup:"Sauvegarde déchiffrée, mais elle ne contient aucun message.", noCrypto:"Votre navigateur ne prend pas en charge WebCrypto ou DecompressionStream. Utilisez une version récente de Chrome, Firefox, Edge ou Safari." },
   en: { you:"You", unknown:"Unknown contact", group:"Group", notes:"Note to self", search:"Search…", msgs:"messages", chats:"chats",
     sample:"Example", sampleSum:"Example data: open your backup to see your own.", backupOf:"Backup from", none:"No messages.",
     pick:"Pick a chat.", deleted:"This message was deleted.", viewonce:"View-once media", payment:"Payment", gift:"Gift badge",
@@ -32,7 +32,7 @@ const TX = {
     done:"Backup decrypted.", working:"Decrypting…", found:"Backup found:", media:"media files indexed", derive:"Keys derived (HKDF-SHA256)",
     bid:"Backup ID decrypted (AES-256-CTR)", mac:"Integrity verified (HMAC-SHA256)", gz:"Decompressed:", frames:"frames read", jsonl:"Plaintext main.jsonl export detected (experimental)",
     oldfmt:"This .backup file is the old Android format (30 digits): use signalbackup-tools.", mediaMissing:"media missing from files folder", mediaFail:"unreadable media",
-    longtext:"(long text in an attached file)", emptyBackup:"Backup decrypted, but it contains no messages.", noCrypto:"Your browser lacks WebCrypto or DecompressionStream. Use a recent Chrome, Firefox, Edge or Safari." }
+    longtext:"(long text in an attached file)", diagOk:"Diagnostic copied: no key, names or messages in it.", exporting:"Exporting…", exportOk:"Chat exported. This file is not encrypted: keep it somewhere safe.", exportBig:"This chat is large: the export may fail if memory runs out.", exportFail:"Export failed (out of memory?).", emptyBackup:"Backup decrypted, but it contains no messages.", noCrypto:"Your browser lacks WebCrypto or DecompressionStream. Use a recent Chrome, Firefox, Edge or Safari." }
 };
 const T = k => (TX[LANG] && TX[LANG][k]) || TX.fr[k] || k;
 function setLang(l) {
@@ -83,7 +83,7 @@ async function gunzip(u8) {
   const r = ds.readable.getReader(); const chunks = []; let n = 0;
   try { for (;;) { const { done, value } = await r.read(); if (done) break; chunks.push(value); n += value.length; } }
   catch (e) { if (!n) throw e; } // octets parasites après la fin du flux gzip : on garde ce qui est décompressé
-  return concat(...chunks);
+  const o = new Uint8Array(n); let p = 0; for (const c of chunks) { o.set(c, p); p += c.length; } return o;
 }
 
 /* ---------- protobuf minimal ---------- */
@@ -322,11 +322,80 @@ $("#dlTxt").onclick = () => {
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([s], { type: "text/plain;charset=utf-8" }));
   a.download = (chatName(MODEL.chats.get(CUR)) || "conversation").replace(/[^\w\- ]+/g, "_") + ".txt"; document.body.appendChild(a); a.click(); a.remove();
 };
-$("#q").addEventListener("input", () => { if (MODEL) renderAll(); });
+let qTimer; $("#q").addEventListener("input", () => { clearTimeout(qTimer); qTimer = setTimeout(() => { if (MODEL) renderAll(); }, 150); });
+
+/* ---------- export HTML autonome ---------- */
+const safeMime = s => /^[a-z0-9]+\/[a-z0-9.+-]+$/i.test(s || "") ? s.toLowerCase() : "application/octet-stream";
+const dataUri = (blob, mime) => new Promise((res, rej) => { const r = new FileReader(); r.onerror = () => rej(r.error); r.onload = () => { const s = String(r.result); res("data:" + mime + ";base64," + s.slice(s.indexOf(",") + 1)); }; r.readAsDataURL(blob); });
+async function exportMedia(fp, label) {
+  const name = esc(fp && (fp.fileName || fp.contentType) || label);
+  const url = await mediaUrl(fp);
+  if (!url || url === "missing" || url === "fail") return `<div class="att">📎 ${name}${url ? " · " + esc(T(url === "missing" ? "mediaMissing" : "mediaFail")) : ""}</div>`;
+  const mime = safeMime(fp.contentType), uri = await dataUri(await (await fetch(url)).blob(), mime);
+  if (mime.startsWith("image/")) return `<img alt="${name}" src="${uri}">`;
+  if (mime.startsWith("video/")) return `<video controls src="${uri}"></video>`;
+  if (mime.startsWith("audio/")) return `<audio controls src="${uri}"></audio>`;
+  return `<a class="att" download="${name}" href="${uri.replace(/^data:[^;]+/, "data:application/octet-stream")}">📎 ${name}</a>`;
+}
+async function exportHtml() {
+  const id = CUR, ch = MODEL.chats.get(id), items = MODEL.items.get(id) || [], title = chatName(ch);
+  const group = !!(MODEL.rec.get(String(ch.recipientId)) || {}).group;
+  const parts = [`<!doctype html><html lang="${LANG}"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; media-src data:; style-src 'unsafe-inline'"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><style>body{margin:0 auto;max-width:760px;padding:24px 16px;font:16px/1.5 system-ui,sans-serif;background:#f1f3ee;color:#18211d;display:flex;flex-direction:column;gap:8px}h1{font-size:1.6rem}.d,.s{align-self:center;color:#56615b;font-size:.85rem}.d{margin-top:16px;font-weight:700}.m{align-self:flex-start;max-width:80%;background:#fff;border-radius:16px;padding:9px 14px;overflow-wrap:anywhere;break-inside:avoid}.o{align-self:flex-end;background:#0d6b5c;color:#fff}.x{white-space:pre-wrap}.a{font-weight:700;font-size:.8rem}.t{font-size:.72rem;opacity:.7;text-align:right}.q{border-left:3px solid #b9770e;padding-left:8px;font-size:.88rem;opacity:.85}.att{display:block;color:inherit}img,video{display:block;max-width:100%;max-height:480px;border-radius:8px}@media print{body{background:#fff}.m{border:1px solid #ccc}.o{background:#fff;color:#000}}</style></head><body><h1>${esc(title)}</h1>`];
+  let day = "", tick = performance.now(), buf = "";
+  for (const it of items) {
+    const ms = num(it.dateSent), dd = fmtDay(ms);
+    if (dd !== day) { buf += `<div class="d">${esc(dd)}</div>`; day = dd; }
+    if (it.updateMessage) { buf += `<div class="s">${esc(updText(it))} · ${fmtTime(ms)}</div>`; continue; }
+    buf += `<div class="m${it.outgoing ? " o" : ""}">`;
+    if (!it.outgoing && group) buf += `<div class="a">${esc(recName(MODEL.rec.get(String(it.authorId))))}</div>`;
+    const sm = it.standardMessage;
+    if (sm) {
+      if (sm.quote) buf += `<div class="q"><b>${esc(recName(MODEL.rec.get(String(sm.quote.authorId))))}</b><br>${esc(bodyText(sm.quote.text) || ((sm.quote.attachments || []).length ? T("attach") : "…"))}</div>`;
+      for (const a of sm.attachments || []) buf += await exportMedia(a.pointer, T("attach"));
+      let tx = bodyText(sm.text);
+      if (sm.longText) { const u = await mediaUrl(sm.longText); if (u && u.startsWith("blob:")) tx = await (await fetch(u)).text(); }
+      if (tx) buf += `<div class="x">${esc(tx)}</div>`;
+      for (const lp of sm.linkPreview || []) if (lp.url) buf += `<div class="att">🔗 ${esc(lp.title || lp.url)}</div>`;
+      if (sm.reactions && sm.reactions.length) buf += `<div>${sm.reactions.map(r => esc(r.emoji || "")).join(" ")}</div>`;
+    } else if (it.stickerMessage && it.stickerMessage.sticker && it.stickerMessage.sticker.data) buf += await exportMedia(it.stickerMessage.sticker.data, T("sticker"));
+    else buf += `<i>${esc(itemSummary(it) || T("event"))}</i>`;
+    buf += `<div class="t">${fmtTime(ms)}</div></div>\n`;
+    if (buf.length > 1e6) { parts.push(new Blob([buf])); buf = ""; }
+    if (performance.now() - tick > 60) { await pause(); tick = performance.now(); }
+  }
+  parts.push(buf, "</body></html>");
+  const u = URL.createObjectURL(new Blob(parts, { type: "text/html;charset=utf-8" })), a = document.createElement("a");
+  a.href = u; a.download = (title || "conversation").replace(/[^\p{L}\p{N}_\- ]+/gu, "_") + ".html"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 60000);
+}
+$("#dlHtml").onclick = async () => {
+  if (!CUR) return;
+  const b = $("#dlHtml"); b.disabled = true; status(T((MODEL.items.get(CUR) || []).length > 20000 ? "exportBig" : "exporting"));
+  try { await exportHtml(); status(T("exportOk"), "ok"); } catch (e) { status(T("exportFail"), "err"); }
+  b.disabled = false;
+};
 
 /* ---------- entrée ---------- */
 let FILES = [];
 function status(msg, kind) { const s = $("#status"); s.textContent = msg; s.className = "status" + (kind ? " " + kind : ""); }
+/* Diagnostic : uniquement des informations de structure (tailles, compteurs, étapes), jamais de clé, nom, chemin ni contenu. */
+let DIAG = null;
+const pause = () => new Promise(r => setTimeout(r, 0));
+function diagText() {
+  const d = DIAG || {}, types = {}; let media = 0;
+  if (MODEL && !MODEL.sample && d.ok) for (const arr of MODEL.items.values()) for (const it of arr) {
+    const k = ["standardMessage","contactMessage","stickerMessage","remoteDeletedMessage","updateMessage","paymentNotification","giftBadge","viewOnceMessage","directStoryReplyMessage","poll","adminDeletedMessage"].find(x => it[x]) || "inconnu";
+    types[k] = (types[k] || 0) + 1; if (it.standardMessage && it.standardMessage.attachments) media += it.standardMessage.attachments.length;
+  }
+  const st = { ok: 0, missing: 0, fail: 0 }; mediaCache.forEach(v => { st[v === "missing" || v === "fail" ? v : "ok"]++; });
+  return ["Lanterne diagnostic 1", "ua: " + navigator.userAgent, "etape: " + (d.step || "-"), "resultat: " + (d.ok ? "ok" : d.ok === false ? "echec" : "-"), "erreur: " + (d.error || "-"),
+    "tailles: main=" + (d.main || 0) + " metadata=" + (d.meta || 0) + " clair=" + (d.raw || 0), "trames: " + (d.frames || 0) + " illisibles=" + (d.bad || 0),
+    "champs inconnus (trame): " + JSON.stringify(d.unknown || {}), "types: " + JSON.stringify(types), "pieces jointes: " + media + " indexees=" + (MEDIA ? MEDIA.size : 0) + " ouvertes=" + JSON.stringify(st)].join("\n");
+}
+$("#diag").onclick = async () => {
+  const s = diagText();
+  try { await navigator.clipboard.writeText(s); status(T("diagOk"), "ok"); }
+  catch (e) { const ta = document.createElement("textarea"); ta.value = s; ta.style.cssText = "position:fixed;opacity:0"; document.body.appendChild(ta); ta.select(); status(T("copyFail")); setTimeout(() => ta.remove(), 8000); }
+};
 const logEl = $("#log"); const log = m => { const li = document.createElement("li"); li.textContent = m; logEl.appendChild(li); };
 function updGo() {
   const n = normAEP($("#aep").value).length;
@@ -369,14 +438,14 @@ function indexMedia(files, plain) {
 }
 
 async function openV2(aepRaw) {
-  const aep = normAEP(aepRaw);
+  const aep = normAEP(aepRaw); DIAG.step = "cle";
   if (aep.length !== 64 || !/^[a-z0-9]+$/.test(aep)) throw new Error(T("needKey"));
   // regroupe main + metadata par dossier, garde le plus récent
   const byDir = new Map();
   for (const f of FILES) if (f.name === "main" || f.name === "metadata") { const d = dirOf(pathOf(f)); const o = byDir.get(d) || {}; o[f.name] = f; byDir.set(d, o); }
   const snaps = [...byDir.entries()].filter(([, o]) => o.main && o.metadata).sort((a, b) => a[0] < b[0] ? 1 : -1);
   if (!snaps.length) throw new Error(T("noSnap"));
-  const [dir, snap] = snaps[0];
+  const [dir, snap] = snaps[0]; DIAG.step = "metadata"; DIAG.main = snap.main.size; DIAG.meta = snap.metadata.size;
   log(`${T("found")} ${dir || "main + metadata"}`);
   MEDIA = indexMedia(FILES, false); if (MEDIA) log(`${MEDIA.size} ${T("media")}`);
 
@@ -394,20 +463,32 @@ async function openV2(aepRaw) {
   const mk = await hkdf(backupKey, 64, concat(INFO_MSG_PREFIX, backupId));
   const hmacKey = mk.subarray(0, 32), aesKey = mk.subarray(32);
 
+  DIAG.step = "hmac"; await pause();
   const main = new Uint8Array(await snap.main.arrayBuffer());
   if (td.decode(main.subarray(0, 8)) === "SBACKUP\x01") throw new Error(T("fs"));
   const body = main.subarray(0, main.length - 32), tag = main.subarray(main.length - 32);
   if (!(await hmacOk(hmacKey, body, tag))) throw new Error(T("badKey"));
   log(T("mac"));
+  DIAG.step = "aes";
   const plain = stripPkcs7(await cbcRaw(aesKey, main.subarray(0, 16), main.subarray(16, main.length - 32)));
-  const raw = await gunzip(plain);
+  DIAG.step = "gzip";
+  const raw = await gunzip(plain); DIAG.raw = raw.length; DIAG.step = "trames";
   log(`${T("gz")} ${(raw.length / 1048576).toFixed(1)} ${LANG === "fr" ? "Mo" : "MB"}`);
 
   const M = newModel(); let p = 0, n = 0, first = true;
+  let tick = performance.now();
   while (p < raw.length) {
-    let len; [len, p] = rv(raw, p); const chunk = raw.subarray(p, p + len); p += len;
-    try { if (first) { M.info = dec(chunk, "BackupInfo"); first = false; } else { addFrame(M, dec(chunk, "Frame")); n++; } } catch (e) { /* trame inconnue ignorée */ }
+    let len, q;
+    try { [len, q] = rv(raw, p); } catch (e) { DIAG.bad = (DIAG.bad || 0) + 1; break; }
+    if (q + len > raw.length) { DIAG.bad = (DIAG.bad || 0) + 1; break; } // fin tronquée : on garde ce qui est lu
+    p = q; const chunk = raw.subarray(p, p + len); p += len;
+    try {
+      if (first) { M.info = dec(chunk, "BackupInfo"); first = false; }
+      else { const fr = dec(chunk, "Frame"); if (fr.recipient || fr.chat || fr.chatItem) addFrame(M, fr); else if (chunk.length) { const f = chunk[0] >> 3; DIAG.unknown = DIAG.unknown || {}; DIAG.unknown[f] = (DIAG.unknown[f] || 0) + 1; } n++; }
+    } catch (e) { DIAG.bad = (DIAG.bad || 0) + 1; }
+    if ((n & 255) === 0 && performance.now() - tick > 40) { status(`${T("working")} ${Math.floor(p / raw.length * 100)} %`); await pause(); tick = performance.now(); }
   }
+  DIAG.frames = n;
   log(`${n.toLocaleString(LANG)} ${T("frames")}`);
   return M;
 }
@@ -431,16 +512,16 @@ $("#form").addEventListener("submit", async e => {
   if (!window.crypto || !crypto.subtle || typeof DecompressionStream === "undefined") return status(T("noCrypto"), "err");
   if (!FILES.length) return status(T("needFiles"), "err");
   if (FILES.some(f => /\.backup$/i.test(f.name)) && !FILES.some(f => f.name === "main")) return status(T("oldfmt"), "err");
-  $("#go").disabled = true; status(T("working"));
+  $("#go").disabled = true; status(T("working")); DIAG = { step: "debut" }; $("#diag").hidden = false;
   try {
     const jsonl = FILES.find(f => /\.jsonl$/i.test(f.name));
     const M = jsonl && !FILES.some(f => f.name === "main") ? await openJsonl(jsonl) : await openV2($("#aep").value);
     if ($("#wipe").checked) $("#aep").value = "";
     mediaCache.forEach(u => { if (u && u.startsWith && u.startsWith("blob:")) URL.revokeObjectURL(u); }); mediaCache.clear();
     MODEL = M; CUR = null; SHOWN = 300;
-    status(T(M.nItems ? "done" : "emptyBackup"), "ok"); renderAll();
+    DIAG.ok = true; DIAG.step = "fin"; status(T(M.nItems ? "done" : "emptyBackup"), "ok"); renderAll();
     document.querySelector(".viewer").scrollIntoView({ behavior: "smooth", block: "start" });
-  } catch (err) { status(err && err.message ? err.message : String(err), "err"); }
+  } catch (err) { DIAG.ok = false; DIAG.error = String(err && err.name || "") + ": " + String(err && err.message || err); status(err && err.message ? err.message : String(err), "err"); }
   updGo();
 });
 

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="fr" data-l="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sauvegarde Signal sur Android : la créer et la lire · Lanterne</title>
+<meta name="description" content="Créer une sauvegarde locale Signal sur Android, la copier sur ordinateur et relire vos messages avec la clé de récupération.">
+<link rel="canonical" href="https://lanterne-backup.com/sauvegarde-signal-android/">
+<link rel="alternate" hreflang="fr" href="https://lanterne-backup.com/sauvegarde-signal-android/">
+<link rel="alternate" hreflang="en" href="https://lanterne-backup.com/en/signal-backup-android/">
+<meta property="og:title" content="Sauvegarde Signal sur Android : la créer et la lire">
+<meta property="og:description" content="Créer une sauvegarde locale Signal sur Android, la copier sur ordinateur et relire vos messages avec la clé de récupération.">
+<meta property="og:image" content="https://lanterne-backup.com/assets/og.png">
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/style.css">
+<meta name="theme-color" content="#0d6b5c">
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="brand"><a href="/"><img src="/assets/icon.svg" alt="" width="26" height="26">Lanterne</a></div></header>
+<main class="article">
+<h1>Sauvegarde Signal sur Android : la créer et la lire</h1>
+<p class="lead">Créer une sauvegarde locale Signal sur Android, la copier sur ordinateur et relire vos messages avec la clé de récupération.</p>
+<h2>Créer la sauvegarde</h2>
+<ol><li>Dans Signal, ouvrez <strong>Réglages › Sauvegardes › Sauvegarde sur l'appareil</strong>.</li>
+<li>Activez-la et choisissez le dossier de destination.</li>
+<li>Notez la <strong>clé de récupération</strong> de 64 caractères et gardez-la hors du téléphone. Signal ne peut pas la retrouver pour vous.</li>
+<li>Lancez une sauvegarde manuelle, ou programmez-la.</li></ol>
+<h2>La copier sur l'ordinateur</h2>
+<p>Branchez le téléphone en USB (mode transfert de fichiers) et copiez le dossier <strong>entier</strong>, avec <code>files</code>. Sans lui, les messages s'ouvrent mais pas les photos.</p>
+<h2>La lire</h2>
+<p>Dans Lanterne, choisissez ce dossier, collez la clé, puis cliquez sur « Déchiffrer et afficher ».</p>
+<h2>Et l'ancien fichier .backup ?</h2>
+<p>Les fichiers protégés par un code de 30 chiffres sont dans l'ancien format. Lanterne ne les lit pas ; <a href="https://github.com/bepaald/signalbackup-tools">signalbackup-tools</a> le fait.</p>
+<p class="callout">Ne donnez jamais votre clé de récupération à quelqu'un qui vous la demande par message ou par téléphone, même s'il dit travailler pour Signal. Avec la sauvegarde, elle donne accès à tous vos messages.</p>
+<p><small>Les libellés des menus peuvent varier selon la version. Référence : l'<a href="https://support.signal.org/">assistance de Signal</a>.</small></p>
+<a class="cta" href="/">Ouvrir ma sauvegarde</a>
+<p class="related"><a href="/sauvegarde-signal-iphone/">Sauvegarde Signal sur iPhone : la créer et la lire</a> · <a href="/sauvegarde-signal-desktop/">Sauvegarde Signal Desktop : la créer et la lire</a> · <a href="/restauration-signal-echouee/">Restauration Signal échouée : que vérifier</a></p>
+<p><small>Lanterne n'est pas affilié à Signal Technology Foundation. <a href="/en/signal-backup-android/">English version</a></small></p>
+</main>
+</div>
+</body>
+</html>
