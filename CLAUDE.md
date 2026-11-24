@@ -40,8 +40,43 @@ Lit aussi, à titre expérimental, l'export en clair `main.jsonl`.
 - médias : `files/xx/hex(SHA-256(plaintextHash ‖ localKey))`, même enveloppe (clés AES = localKey[0:32],
   HMAC = localKey[32:64]), tronqués à `locatorInfo.size`
 
+## Déjà validé (24/11/2026)
+- HKDF clé de sauvegarde et clé de messages : identiques aux vecteurs connus (KAT) de signal-backup-decrypt.
+- `legacy-account.binproto.encrypted` (libsignal) ouvert dans la page, renommé `main`, avec un `metadata`
+  fabriqué (AEP = 64 × « m », ACI = 16 × 0x11, backupId = HKDF(backupKey, "20241024_SIGNAL_BACKUP_ID:" ‖ ACI, 16)) :
+  HMAC vérifié, déchiffrement, gzip, 3 trames lues.
+- Schéma `S` : 97 numéros de champs comparés à `backup.proto`, aucun écart.
+- `canonical-backup.binproto` (remis dans une enveloppe chiffrée de test) et le `.jsonl` officiel : conversation,
+  2 messages et citations corrects.
+- Non validé sur données officielles : médias, groupes avec messages, gros volumes. `tests/kat_test.mjs` reste à écrire.
+
+## Validation sans vraie sauvegarde (le propriétaire n'utilise pas Signal)
+Personne dans l'équipe n'a de sauvegarde Signal. On valide donc contre les données de test officielles :
+1. Cloner `https://github.com/slurdge/signal-backup-decrypt` (avec `--recurse-submodules` : libsignal est
+   dans `vendor/`). Lancer ses tests (`uv run pytest`).
+2. Reprendre les vecteurs de test connus (KAT) de `tests/test_keys.py` et vérifier que les fonctions JS de
+   `assets/app.js` (HKDF, clé de métadonnées, clé de messages, déchiffrement de l'identifiant) donnent
+   exactement les mêmes octets. Écrire ce test dans `tests/kat_test.mjs` (Node 20+, WebCrypto natif).
+3. Dans libsignal (`vendor/libsignal/rust/message-backup/tests/res/`), chercher les fichiers de test
+   (`.binproto`, et toute sauvegarde chiffrée de test avec sa clé). Vérifier que le décodeur protobuf de
+   `app.js` lit les trames sans erreur et retrouve destinataires, conversations et messages. Corriger les
+   numéros de champs du schéma `S` si besoin, en les vérifiant dans `backup.proto`.
+4. Fichiers officiels confirmés dans libsignal (`rust/message-backup/tests/res/`) :
+   - `canonical-backup.binproto` + `canonical-backup.expected.json` : trames en clair et résultat attendu →
+     vérifier que `dec()` de `app.js` retrouve les mêmes destinataires, conversations et messages.
+   - `canonical-backup.takeout-export.expected.jsonl` → vérifier la lecture JSONL (`openJsonl`).
+   - `test-cases/valid-encrypted/legacy-account.binproto.encrypted` : vrai fichier chiffré par le code de
+     Signal, même enveloppe que `main` (sans confidentialité persistante). Retrouver dans les tests Rust
+     de libsignal la clé (AEP ou BackupKey) et l'ACI utilisés, calculer le backupId
+     (`HKDF(backupKey, "20241024_SIGNAL_BACKUP_ID:" ‖ ACI, 16)`), puis déchiffrer ce fichier avec les
+     fonctions de `app.js` et comparer au `.source.jsonproto`. `new-account…` utilise la confidentialité
+     persistante (`SBACKUP\x01`) : vérifier seulement que la page affiche le bon message d'erreur.
+   - Seul le fichier `metadata` (propre aux sauvegardes locales) n'a pas de fichier officiel : son format
+     vient de signal-backup-decrypt, testé par son auteur sur de vraies sauvegardes.
+5. Résumer ce qui est validé et ce qui ne l'est pas. Ne rien publier si les KAT échouent.
+
 ## Pistes de travail (dans l'ordre)
-1. Valider sur une vraie sauvegarde (voir règle 1).
+1. Valider (section ci-dessus), et sur une vraie sauvegarde si un utilisateur volontaire en fournit le journal technique (voir règle 1).
 2. Export HTML autonome d'une conversation (Premium plus tard).
 3. Recherche globale plus rapide, pagination, rendu des styles de texte (gras, italique, spoiler).
 4. Pages de guide supplémentaires (Android, iPhone, Desktop, « échec de restauration »).

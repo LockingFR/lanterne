@@ -20,7 +20,7 @@ const TX = {
     done:"Sauvegarde déchiffrée.", working:"Déchiffrement en cours…", found:"Sauvegarde trouvée :", media:"fichiers médias indexés", derive:"Clés dérivées (HKDF-SHA256)",
     bid:"Identifiant de sauvegarde déchiffré (AES-256-CTR)", mac:"Intégrité vérifiée (HMAC-SHA256)", gz:"Décompressé :", frames:"trames lues", jsonl:"Export en clair main.jsonl détecté (lecture expérimentale)",
     oldfmt:"Ce fichier .backup est l'ancien format Android (30 chiffres) : utilisez signalbackup-tools.", mediaMissing:"média absent du dossier files", mediaFail:"média illisible",
-    longtext:"(texte long dans un fichier joint)", noCrypto:"Votre navigateur ne prend pas en charge WebCrypto ou DecompressionStream. Utilisez une version récente de Chrome, Firefox, Edge ou Safari." },
+    longtext:"(texte long dans un fichier joint)", emptyBackup:"Sauvegarde déchiffrée, mais elle ne contient aucun message.", noCrypto:"Votre navigateur ne prend pas en charge WebCrypto ou DecompressionStream. Utilisez une version récente de Chrome, Firefox, Edge ou Safari." },
   en: { you:"You", unknown:"Unknown contact", group:"Group", notes:"Note to self", search:"Search…", msgs:"messages", chats:"chats",
     sample:"Example", sampleSum:"Example data: open your backup to see your own.", backupOf:"Backup from", none:"No messages.",
     pick:"Pick a chat.", deleted:"This message was deleted.", viewonce:"View-once media", payment:"Payment", gift:"Gift badge",
@@ -32,7 +32,7 @@ const TX = {
     done:"Backup decrypted.", working:"Decrypting…", found:"Backup found:", media:"media files indexed", derive:"Keys derived (HKDF-SHA256)",
     bid:"Backup ID decrypted (AES-256-CTR)", mac:"Integrity verified (HMAC-SHA256)", gz:"Decompressed:", frames:"frames read", jsonl:"Plaintext main.jsonl export detected (experimental)",
     oldfmt:"This .backup file is the old Android format (30 digits): use signalbackup-tools.", mediaMissing:"media missing from files folder", mediaFail:"unreadable media",
-    longtext:"(long text in an attached file)", noCrypto:"Your browser lacks WebCrypto or DecompressionStream. Use a recent Chrome, Firefox, Edge or Safari." }
+    longtext:"(long text in an attached file)", emptyBackup:"Backup decrypted, but it contains no messages.", noCrypto:"Your browser lacks WebCrypto or DecompressionStream. Use a recent Chrome, Firefox, Edge or Safari." }
 };
 const T = k => (TX[LANG] && TX[LANG][k]) || TX.fr[k] || k;
 function setLang(l) {
@@ -239,6 +239,7 @@ function renderAll() {
     `${order.length} ${T("chats")} · ${MODEL.nItems.toLocaleString(LANG)} ${T("msgs")}` +
     (MODEL.info.backupTimeMs ? ` · ${T("backupOf")} ${new Date(num(MODEL.info.backupTimeMs)).toLocaleDateString(LANG === "fr" ? "fr-FR" : "en-GB")}` : "");
   const list = $("#chatlist"); list.innerHTML = "";
+  if (!order.length) { list.innerHTML = `<div class="empty">${esc(T("emptyBackup"))}</div>`; $("#convTitle").textContent = "—"; $("#msgs").innerHTML = `<div class="empty">${esc(T("emptyBackup"))}</div>`; return; }
   for (const o of order) {
     const nm = chatName(o.ch);
     let hits = 0;
@@ -437,7 +438,7 @@ $("#form").addEventListener("submit", async e => {
     if ($("#wipe").checked) $("#aep").value = "";
     mediaCache.forEach(u => { if (u && u.startsWith && u.startsWith("blob:")) URL.revokeObjectURL(u); }); mediaCache.clear();
     MODEL = M; CUR = null; SHOWN = 300;
-    status(T("done"), "ok"); renderAll();
+    status(T(M.nItems ? "done" : "emptyBackup"), "ok"); renderAll();
     document.querySelector(".viewer").scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (err) { status(err && err.message ? err.message : String(err), "err"); }
   updGo();
