@@ -87,3 +87,11 @@ Personne dans l'équipe n'a de sauvegarde Signal. On valide donc contre les donn
 `python tools/build_pages.py` régénère `en/index.html` (depuis `index.html`), les guides, les pages de confidentialité et
 `sitemap.xml`. À relancer après toute modification de `index.html`. Ne pas éditer ces fichiers à la main.
 Le bouton « Copier le diagnostic » ne doit contenir que des tailles, compteurs et étapes. La carte Premium est masquée.
+
+## Publication et version hors ligne
+- Le site en ligne doit être identique à la dernière release GitHub. Pour toute modification d'un fichier public :
+  augmenter `VERSION` et `CACHE` dans `sw.js`, `build_pages.py`, les deux tests, `build_offline.py`, `gh release create`,
+  déployer **uniquement `dist/site`**, puis `python tools/verify-deployment.py`.
+- Chemins relatifs dans les pages (file://), sauf `404.html`. Nouveau fichier public : l'ajouter à `tools/site_files.py`.
+- `python tests/run_offline_test.py` doit aussi réussir. La CSP de SECURITY.md et des balises meta suit `_headers`.
+- Langue : `assets/lang.js`. Ne jamais mémoriser un choix que le visiteur n'a pas fait, ni rediriger les robots.

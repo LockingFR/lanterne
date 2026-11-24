@@ -2,24 +2,27 @@
 <html lang="en" data-l="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self'; manifest-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>How to read a Signal backup on a computer (recovery key)</title>
 <meta name="description" content="Open your Signal local backup folder (main, metadata, files) on PC or Mac with your recovery key, without a phone. Step-by-step guide and free tool.">
 <link rel="canonical" href="https://lanterne-backup.com/en/read-signal-backup/">
 <link rel="alternate" hreflang="fr" href="https://lanterne-backup.com/lire-sauvegarde-signal/">
 <link rel="alternate" hreflang="en" href="https://lanterne-backup.com/en/read-signal-backup/">
+<link rel="alternate" hreflang="x-default" href="https://lanterne-backup.com/en/read-signal-backup/">
 <meta property="og:image" content="https://lanterne-backup.com/assets/og.png">
-<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/style.css">
+<script src="../../assets/lang.js"></script>
+<link rel="icon" href="../../assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/style.css">
 <meta name="theme-color" content="#0d6b5c">
 </head>
 <body>
 <div class="wrap">
-<header class="top"><div class="brand"><a href="/"><img src="/assets/icon.svg" alt="" width="26" height="26">Lanterne</a></div></header>
+<header class="top"><div class="brand"><a href="../../"><img src="../../assets/icon.svg" alt="" width="26" height="26">Lanterne</a></div></header>
 <main class="article">
 <h1>How to read a Signal backup on a computer</h1>
 <p class="lead">Since Signal 8.30, the on-device backup is no longer a single file: it's an encrypted folder shared by Android, iPhone and Signal Desktop. Here's how to open it and read your messages without a phone, using your recovery key.</p>
-<a class="cta" href="/en/">Open my backup with Lanterne</a>
+<a class="cta" href="../../en/">Open my backup with Lanterne</a>
 
 <h2>What a Signal local backup contains</h2>
 <p>The backup folder (often named <code>SignalBackups</code>) holds:</p>
@@ -33,7 +36,7 @@
 <ol>
 <li><strong>Find your recovery key.</strong> Signal shows it under Settings, Backups if your phone still works; otherwise check the password manager where you saved it.</li>
 <li><strong>Copy the whole folder to your computer</strong> (USB cable, SD card, or the folder you picked in Signal Desktop). Keep the <code>files</code> folder to get your media back.</li>
-<li><strong>Open <a href="/en/">Lanterne</a></strong>, click "Choose folder" and select the parent folder (the one containing <code>files</code>).</li>
+<li><strong>Open <a href="../../en/">Lanterne</a></strong>, click "Choose folder" and select the parent folder (the one containing <code>files</code>).</li>
 <li><strong>Paste the key</strong> and click "Decrypt and view". Your chats appear, with search and text export.</li>
 </ol>
 <p class="callout">Lanterne decrypts everything inside your browser. To check, turn off your internet connection after opening the page: the tool keeps working.</p>
@@ -46,8 +49,8 @@
 
 <h2>What about privacy?</h2>
 <p>Your recovery key is the master key to your backups. Never type it on a site someone sent you in a message. Lanterne is open source, has no account and no ads on the tool page, and a strict security policy stops the page from sending anything.</p>
-<a class="cta" href="/en/">Open my backup</a>
-<p><small>Lanterne is not affiliated with Signal Technology Foundation. <a href="/lire-sauvegarde-signal/">Version française</a></small></p>
+<a class="cta" href="../../en/">Open my backup</a>
+<p><small>Lanterne is not affiliated with Signal Technology Foundation. <a hreflang="fr" href="../../lire-sauvegarde-signal/">Version française</a></small></p>
 </main>
 </div>
 </body>

@@ -2,13 +2,14 @@
 <html lang="fr" data-l="fr">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self'; manifest-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <link rel="canonical" href="https://lanterne-backup.com/">
 <link rel="alternate" hreflang="fr" href="https://lanterne-backup.com/">
 <link rel="alternate" hreflang="en" href="https://lanterne-backup.com/en/">
 <link rel="alternate" hreflang="x-default" href="https://lanterne-backup.com/en/">
-<link rel="manifest" href="/manifest.webmanifest">
-<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+<script src="assets/lang.js"></script>
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#0d6b5c">
 <title>Lanterne, lecteur de sauvegardes Signal</title>
 <meta name="description" content="Lisez votre sauvegarde locale Signal (nouveau format, Android, iPhone, Desktop) sur ordinateur avec votre clé de récupération. Déchiffrement 100 % dans le navigateur, rien n'est envoyé.">
@@ -31,8 +32,7 @@
 {"@type":"Question","name":"Lanterne est-il affilié à Signal ?","acceptedAnswer":{"@type":"Answer","text":"Non. Lanterne est un outil indépendant. Signal est une marque de Signal Technology Foundation."}}
 ]}]}
 </script>
-<link rel="preload" href="/assets/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="assets/style.css">
 
 </head>
 <body>
@@ -170,6 +170,24 @@
     </ol>
   </section>
 
+  <section class="band" id="verifier">
+    <h2 class="sec-h" data-l="fr">Vérifier</h2>
+    <h2 class="sec-h" data-l="en">Verify</h2>
+    <p class="callout" data-l="fr"><strong>Le plus prudent : la version hors ligne.</strong> Un site peut changer d'une visite à l'autre. La version hors ligne ne change plus une fois téléchargée : vérifiez son empreinte, coupez votre connexion, puis ouvrez <code>index.html</code>.</p>
+    <p class="callout" data-l="en"><strong>The safest choice: the offline version.</strong> A website can change between visits. The offline version stays the same once downloaded: check its fingerprint, disconnect from the network, then open <code>index.html</code>.</p>
+    <div class="cols">
+      <div><h3 data-l="fr">Version hors ligne</h3><h3 data-l="en">Offline version</h3>
+        <p data-l="fr">Un fichier zip à extraire en entier, sans installation ni serveur. <a href="https://github.com/LockingFR/lanterne/releases/latest">Télécharger sur GitHub</a></p>
+        <p data-l="en">A zip file to extract in full, with nothing to install and no server. <a href="https://github.com/LockingFR/lanterne/releases/latest">Download from GitHub</a></p></div>
+      <div><h3 data-l="fr">Empreintes SHA-256</h3><h3 data-l="en">SHA-256 fingerprints</h3>
+        <p data-l="fr">Celles du zip et de chaque fichier : <a href="https://github.com/LockingFR/lanterne/releases/latest/download/SHA256SUMS">SHA256SUMS</a>. Le script <a href="https://github.com/LockingFR/lanterne/blob/main/tools/verify-deployment.py">verify-deployment</a> compare ce site à la version publiée.</p>
+        <p data-l="en">For the zip and every file in it: <a href="https://github.com/LockingFR/lanterne/releases/latest/download/SHA256SUMS">SHA256SUMS</a>. The <a href="https://github.com/LockingFR/lanterne/blob/main/tools/verify-deployment.py">verify-deployment</a> script compares this site with the published release.</p></div>
+      <div><h3 data-l="fr">Limites et sécurité</h3><h3 data-l="en">Limits and security</h3>
+        <p data-l="fr">Ce que Lanterne protège, ce qu'elle ne protège pas et comment signaler une faille : <a href="https://github.com/LockingFR/lanterne/blob/main/SECURITY.md#français">SECURITY.md</a></p>
+        <p data-l="en">What Lanterne protects, what it doesn't, and how to report a vulnerability: <a href="https://github.com/LockingFR/lanterne/blob/main/SECURITY.md">SECURITY.md</a></p></div>
+    </div>
+  </section>
+
   <section class="band" id="faq">
     <h2 class="sec-h">FAQ</h2>
     <div class="faq">
@@ -196,12 +214,12 @@
 
   <footer>
     <p data-l="fr">Lanterne est un outil indépendant, non affilié à Signal Technology Foundation. Le code de déchiffrement est une réimplémentation du format documenté par libsignal et par le projet open source signal-backup-decrypt. Vos fichiers et votre clé restent sur votre appareil.</p>
-    <p data-l="fr"><a href="/lire-sauvegarde-signal/">Guide : lire une sauvegarde Signal sur ordinateur</a> · <a href="/sauvegarde-signal-android/">Android</a> · <a href="/sauvegarde-signal-iphone/">iPhone</a> · <a href="/sauvegarde-signal-desktop/">Desktop</a> · <a href="/restauration-signal-echouee/">Restauration échouée</a> · <a href="/confidentialite/">Confidentialité</a> · <a href="https://github.com/LockingFR/lanterne">Code source</a></p>
+    <p data-l="fr"><a href="lire-sauvegarde-signal/">Guide : lire une sauvegarde Signal sur ordinateur</a> · <a href="sauvegarde-signal-android/">Android</a> · <a href="sauvegarde-signal-iphone/">iPhone</a> · <a href="sauvegarde-signal-desktop/">Desktop</a> · <a href="restauration-signal-echouee/">Restauration échouée</a> · <a href="confidentialite/">Confidentialité</a> · <a href="#verifier">Vérifier</a> · <a href="https://github.com/LockingFR/lanterne">Code source</a></p>
     <p data-l="en">Lanterne is an independent tool, not affiliated with Signal Technology Foundation. The decryption code reimplements the format documented by libsignal and the open-source signal-backup-decrypt project. Your files and key stay on your device.</p>
-    <p data-l="en"><a href="/en/read-signal-backup/">Guide: read a Signal backup on a computer</a> · <a href="/en/signal-backup-android/">Android</a> · <a href="/en/signal-backup-iphone/">iPhone</a> · <a href="/en/signal-backup-desktop/">Desktop</a> · <a href="/en/signal-restore-failed/">Failed restore</a> · <a href="/en/privacy/">Privacy</a> · <a href="https://github.com/LockingFR/lanterne">Source code</a></p>
+    <p data-l="en"><a href="en/read-signal-backup/">Guide: read a Signal backup on a computer</a> · <a href="en/signal-backup-android/">Android</a> · <a href="en/signal-backup-iphone/">iPhone</a> · <a href="en/signal-backup-desktop/">Desktop</a> · <a href="en/signal-restore-failed/">Failed restore</a> · <a href="en/privacy/">Privacy</a> · <a href="#verifier">Verify</a> · <a href="https://github.com/LockingFR/lanterne">Source code</a></p>
   </footer>
 </div>
 
-<script src="/assets/app.js" defer></script>
+<script src="assets/app.js" defer></script>
 </body>
 </html>

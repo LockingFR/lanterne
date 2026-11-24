@@ -1,4 +1,4 @@
-@font-face{font-family:"Bricolage";src:url("/assets/fonts/bricolage.woff2") format("woff2");font-weight:200 800;font-display:swap}
+@font-face{font-family:"Bricolage";src:url("fonts/bricolage.woff2") format("woff2");font-weight:200 800;font-display:swap}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 body{margin:0}
 img{max-width:100%}
@@ -187,6 +187,7 @@ textarea#aep,#q{border-radius:9px}
 .m.out{border-bottom-right-radius:5px}.m:not(.out){border-bottom-left-radius:5px}
 section.band{padding-block:88px 0}
 section.trust{padding-top:56px}
+#verifier .callout{margin:0 0 30px}
 .cols{gap:40px}.cols>div{border-top:3px solid var(--lamp);padding-top:16px}
 .cols h3{font-size:1.25rem}
 .sec-h{font-size:clamp(1.8rem,3.6vw,2.7rem);letter-spacing:-.02em;margin-bottom:30px}

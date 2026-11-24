@@ -5,9 +5,9 @@ const td = new TextDecoder();
 const enc = new TextEncoder();
 
 /* ---------- langue ---------- */
-let LANG = /^\/en(\/|$)/.test(location.pathname) ? "en" : "fr";
-try { const qp = new URLSearchParams(location.search).get("lang"); if (qp === "en" || qp === "fr") localStorage.setItem("lanterne-lang", qp); } catch (e) {}
-try { const s = localStorage.getItem("lanterne-lang"); if (s && location.pathname === "/") LANG = s; } catch (e) {}
+let LANG = window.LANTERNE.initial; // voir lang.js
+const PAGE_LANG = document.documentElement.lang;
+const SW_URL = new URL("../sw.js", document.currentScript.src).href;
 const TX = {
   fr: { you:"Vous", unknown:"Contact inconnu", group:"Groupe", notes:"Note à soi", search:"Rechercher…", msgs:"messages", chats:"conversations",
     sample:"Exemple", sampleSum:"Données d'exemple : ouvrez votre sauvegarde pour voir les vôtres.", backupOf:"Sauvegarde du", none:"Aucun message.",
@@ -39,11 +39,17 @@ function setLang(l) {
   LANG = l; document.documentElement.setAttribute("data-l", l); document.documentElement.lang = l;
   $("#lang-fr").setAttribute("aria-pressed", l === "fr"); $("#lang-en").setAttribute("aria-pressed", l === "en");
   $("#q").placeholder = T("search");
-  try { localStorage.setItem("lanterne-lang", l); } catch (e) {}
   if (MODEL) renderAll();
 }
-$("#lang-fr").onclick = () => setLang("fr");
-$("#lang-en").onclick = () => setLang("en");
+function pickLang(l) {
+  const saved = window.LANTERNE.choose(l);
+  // Rien d'ouvert ni de saisi : on va sur la page de cette langue. Sinon on traduit sur place pour ne rien perdre.
+  const idle = MODEL && MODEL.sample && !FILES.length && !$("#aep").value;
+  if (idle && l !== LANG && l !== PAGE_LANG && window.LANTERNE.go(l, !saved)) return;
+  setLang(l);
+}
+$("#lang-fr").onclick = () => pickLang("fr");
+$("#lang-en").onclick = () => pickLang("en");
 
 /* ---------- utilitaires ---------- */
 const hex = u => Array.from(u, b => b.toString(16).padStart(2, "0")).join("");
@@ -547,7 +553,7 @@ function sample() {
   return M;
 }
 
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => {});
+if (location.protocol !== "file:" && "serviceWorker" in navigator) navigator.serviceWorker.register(SW_URL).catch(() => {});
 setLang(LANG);
 MODEL = sample(); renderAll();
 updGo();

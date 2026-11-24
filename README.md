@@ -8,7 +8,7 @@ avec la clé de récupération. Aucun serveur, aucun envoi de données, fonction
 ## Lancer en local
 ```bash
 python -m http.server 8000
-# puis ouvrir http://localhost:8000
+# puis ouvrir http://localhost:8000 (ou ouvrir directement index.html)
 ```
 
 ## Tester
@@ -20,10 +20,22 @@ python tests/run_test.py
 Le test fabrique une fausse sauvegarde, la déchiffre dans Chromium avec la CSP de production et vérifie
 texte, image et rejet d'une mauvaise clé.
 
+`python tests/run_offline_test.py` teste la version hors ligne en `file://` (Chromium, Firefox, WebKit) et la langue.
+
+## Version hors ligne / Offline version
+[Télécharger la dernière version](https://github.com/LockingFR/lanterne/releases/latest), vérifier son empreinte,
+extraire tout le zip, couper le réseau, ouvrir `index.html`. Détails : [SECURITY.md](SECURITY.md).
+
+- `python tools/build_offline.py` : construit le zip (reproductible) et `SHA256SUMS` dans `dist/`.
+- `python tools/verify-deployment.py` : compare le site en ligne à la release.
+
 ## Déployer
-Site statique : Cloudflare Pages (gratuit), sans étape de build, répertoire de sortie `/`.
+Site statique sur Cloudflare Pages. Le site doit rester identique à la dernière release : augmenter `VERSION`,
+lancer `build_offline.py`, publier la release, puis
+`npx wrangler pages deploy dist/site --project-name lanterne-backup --branch main` et `verify-deployment.py`.
 
 ## Sécurité
+- Modèle de menace, CSP et signalement d'une faille : [SECURITY.md](SECURITY.md).
 - Tout le déchiffrement passe par WebCrypto. `_headers` impose une CSP qui interdit toute connexion externe.
 - Ne versionnez jamais une vraie sauvegarde ni une clé (voir `.gitignore`).
 

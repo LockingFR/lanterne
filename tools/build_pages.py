@@ -16,6 +16,24 @@ def write(p, t):
         f.write(t)
 
 
+# Même CSP que _headers, pour la version hors ligne (frame-ancestors n'est pas permis dans une balise meta).
+CSP = re.search(r"Content-Security-Policy: (.*)", read("_headers"))[1].strip()
+META = '<meta http-equiv="Content-Security-Policy" content="' + CSP.replace("; frame-ancestors 'none'", "") + '">\n'
+META_RE = re.compile(r'<meta http-equiv="Content-Security-Policy" content="[^"]*">\n')
+
+
+def relative(t, up):
+    """Chemins /absolus → relatifs : le site doit aussi s'ouvrir depuis le disque (file://)."""
+    return re.sub(r'((?:href|src)=")/(?!/)', lambda m: m[1] + up, t)
+
+
+def sync_csp():
+    for p in ("index.html", "lire-sauvegarde-signal/index.html", "en/read-signal-backup/index.html"):
+        t, n = META_RE.subn(lambda m: META, read(p))
+        assert n == 1, p
+        write(p, t)
+
+
 def build_en():
     t = read("index.html")
     t = t.replace('<html lang="fr" data-l="fr">', '<html lang="en" data-l="en">')
@@ -34,6 +52,7 @@ def build_en():
         {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": clean(q), "acceptedAnswer": {"@type": "Answer", "text": clean(a)}} for q, a in faq]}]}
     blob = json.dumps(data, ensure_ascii=False).replace("<", "\\u003c")
     t = re.sub(r'(<script type="application/ld\+json">).*?(</script>)', lambda m: m[1] + "\n" + blob + "\n" + m[2], t, flags=re.S)
+    t = re.sub(r'((?:href|src)=")(?!https?:|#|data:)', r'\1../', t)
     write("en/index.html", t)
 
 
@@ -134,11 +153,11 @@ PAGES = [
  ("confidentialite", "en/privacy", "Confidentialité", "Privacy",
   "Ce que Lanterne fait, et ne fait pas, de vos données.", "What Lanterne does, and doesn't do, with your data.",
   """<h2>Vos sauvegardes et votre clé</h2><p>Elles restent dans votre navigateur. Lanterne ne les envoie pas et ne les enregistre pas. Fermer ou recharger l'onglet les retire de la page.</p>
-<h2>Ce qui est enregistré sur votre appareil</h2><p>Votre langue, et une copie des fichiers du site pour qu'il fonctionne hors ligne. Les exports que vous créez ne sont pas chiffrés : rangez-les en lieu sûr.</p>
+<h2>Ce qui est enregistré sur votre appareil</h2><p>Votre langue, si vous la choisissez, et une copie des fichiers du site pour qu'il fonctionne hors ligne. Les exports que vous créez ne sont pas chiffrés : rangez-les en lieu sûr.</p>
 <h2>Hébergement</h2><p>Le site est hébergé par Cloudflare, qui traite les données techniques nécessaires (dont l'adresse IP) pour livrer les pages et les protéger. Lanterne n'ajoute ni publicité, ni outil d'analyse, ni cookie de suivi.</p>
 <h2>Le bouton de diagnostic</h2><p>Il copie des tailles, des compteurs, l'étape atteinte et la version de votre navigateur. Rien n'est envoyé : vous choisissez de le partager ou non.</p>""",
   """<h2>Your backups and key</h2><p>They stay in your browser. Lanterne does not send or store them. Closing or reloading the tab removes them from the page.</p>
-<h2>What is stored on your device</h2><p>Your language, and a copy of the site's files so it works offline. Exports you create are not encrypted: keep them somewhere safe.</p>
+<h2>What is stored on your device</h2><p>Your language, if you pick one, and a copy of the site's files so it works offline. Exports you create are not encrypted: keep them somewhere safe.</p>
 <h2>Hosting</h2><p>The site is hosted by Cloudflare, which processes the technical data needed (including IP addresses) to deliver and protect pages. Lanterne adds no ads, analytics or tracking cookies.</p>
 <h2>The diagnostic button</h2><p>It copies sizes, counters, the step reached and your browser version. Nothing is sent: you choose whether to share it.</p>"""),
 ]
@@ -152,19 +171,22 @@ def build_pages():
             rel = " · ".join(f'<a href="/{u}/">{html.escape(x)}</a>' for u, x in other)
             aff = ("Lanterne n'est pas affilié à Signal Technology Foundation.", "English version") if l == "fr" else ("Lanterne is not affiliated with Signal Technology Foundation.", "Version française")
             home = "/" if l == "fr" else "/en/"
-            write(me + "/index.html", f"""<!doctype html>
+            up = "../" * (me.count("/") + 1)
+            write(me + "/index.html", relative(f"""<!doctype html>
 <html lang="{l}" data-l="{l}">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+{META}<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>{html.escape(title)} · Lanterne</title>
 <meta name="description" content="{html.escape(desc)}">
 <link rel="canonical" href="{BASE}/{me}/">
 <link rel="alternate" hreflang="fr" href="{BASE}/{fr}/">
 <link rel="alternate" hreflang="en" href="{BASE}/{en}/">
+<link rel="alternate" hreflang="x-default" href="{BASE}/{en}/">
 <meta property="og:title" content="{html.escape(title)}">
 <meta property="og:description" content="{html.escape(desc)}">
 <meta property="og:image" content="{BASE}/assets/og.png">
+<script src="/assets/lang.js"></script>
 <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/style.css">
 <meta name="theme-color" content="#0d6b5c">
@@ -179,12 +201,12 @@ def build_pages():
 {"" if privacy else WARN[l] + chr(10) + NOTE[l]}
 {CTA[l]}
 <p class="related">{rel}</p>
-<p><small>{aff[0]} <a href="/{en if l == 'fr' else fr}/">{aff[1]}</a></small></p>
+<p><small>{aff[0]} <a hreflang="{'en' if l == 'fr' else 'fr'}" href="/{en if l == 'fr' else fr}/">{aff[1]}</a></small></p>
 </main>
 </div>
 </body>
 </html>
-""")
+""", up))
 
 
 def build_sitemap():
@@ -192,6 +214,7 @@ def build_sitemap():
     write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>{BASE}/{u}</loc></url>\n" for u in urls) + "</urlset>\n")
 
 
+sync_csp()
 build_en()
 build_pages()
 build_sitemap()
