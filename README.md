@@ -22,7 +22,6 @@ texte, image et rejet d'une mauvaise clé.
 
 ## Déployer
 Site statique : Cloudflare Pages (gratuit), sans étape de build, répertoire de sortie `/`.
-Remplacer `DOMAINE`, `GITHUB_USER` et `KOFI_USER` dans les fichiers avant la mise en ligne.
 
 ## Sécurité
 - Tout le déchiffrement passe par WebCrypto. `_headers` impose une CSP qui interdit toute connexion externe.
